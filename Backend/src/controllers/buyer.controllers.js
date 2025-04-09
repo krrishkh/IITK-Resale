@@ -5,7 +5,7 @@ import { PurchaseRequest } from "../models/purchaseRequest.models.js";
 
 const getAllItems = asyncHandler(async (req, res) => {
     try {
-        const items = await Item.find({ status: { $ne: "sold" } }); // Fetch only unsold items
+        const items = await Item.find({ status: { $ne: "sold" } }).populate("owner", "fullname contact email");; // Fetch only unsold items
         res.status(200).json({
             success: true,
             items,
@@ -63,7 +63,27 @@ const requestPurchase = asyncHandler( async(req, res) => {
     
 });
 
+
+const getItemById = asyncHandler( async (req, res) => {
+    try {
+      const item = await Item.findById(req.params.id).populate("owner", "name email contact");
+      if (!item) {
+        return res.status(404).json({ success: false, message: "Item not found" });
+      }
+  
+      res.status(200).json({
+        success: true,
+        item,
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
+
+
 export { 
     getAllItems, 
-    requestPurchase 
+    requestPurchase,
+    getItemById,
 };

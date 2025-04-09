@@ -30,7 +30,7 @@ const addItem = asyncHandler( async(req, res) => {
             condition,
             negotiable,
             sellerRating,
-            owner: req.user._id, 
+            owner: req.user._id,
             images: imageUrls
         });
 

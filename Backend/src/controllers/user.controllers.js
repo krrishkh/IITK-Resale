@@ -81,18 +81,19 @@ const registerUser = asyncHandler( async(req, res) => {
 
 const loginUser = asyncHandler( async(req, res) => {
     try {
-        const { username, email, password } = req.body;
-    
-        if(!username || !email) {
-            throw new ApiError(402, "Email or Username is required");
+        const { identifier, password } = req.body;
+
+        if (!identifier) {
+          throw new ApiError(402, "Email or Username is required");
         }
-        if(!password){
-            throw new ApiError(402, "Password is required");
+        if (!password) {
+          throw new ApiError(402, "Password is required");
         }
-      
+        
+        // Determine if identifier is email or username
         const existedUser = await User.findOne({
-            $or: [{username}, {email}]
-        })
+          $or: [{ email: identifier }, { username: identifier }]
+        });
     
     
         if(!existedUser){
@@ -162,9 +163,28 @@ const logoutUser = asyncHandler( async(req, res) => {
 
 })
 
+const getUserDetails = asyncHandler( async(req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select("-password -refreshToken")
+        if(!user){
+            throw new ApiError(404, "User not found")
+        }
+
+        return res.status(200).json({
+            message: "User details fetched successfully",
+            user
+        })
+    } catch (error) {
+        throw error
+    }
+});
+
+
 export {
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    getUserDetails
+
 
 }

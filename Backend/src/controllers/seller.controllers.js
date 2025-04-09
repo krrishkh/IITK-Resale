@@ -20,6 +20,7 @@ const getSellerRequest = asyncHandler( async(req, res) => {
 const respondToRequest = asyncHandler(async (req, res) => {
     const { requestId, response } = req.body; // response = "accepted" or "rejected"
 
+
     if (!["accepted", "rejected"].includes(response)) {
         throw new ApiError(400, "Invalid response. Must be 'accepted' or 'rejected'");
     }
@@ -51,7 +52,34 @@ const respondToRequest = asyncHandler(async (req, res) => {
     });
 });
 
+const getMyItems = asyncHandler(async (req, res) => {
+    const sellerId = req.user._id;
+    const items = await Item.find({ owner: sellerId }).populate("owner", "fullname contact email");
+    if (!items) throw new ApiError(404, "No items found for this seller");
+
+    return res.status(200).json({
+        success: true,
+        items,
+    });
+});
+
+const getMyRequests = asyncHandler(async (req, res) => {
+    const buyerId = req.user._id;
+    const requests = await PurchaseRequest.find({ buyer: buyerId })
+        .populate("item", "itemName description price")
+        .populate("seller", "name contact email")
+        .populate("status", "status");
+       
+    
+    return res.status(200).json({
+        success: true,
+        requests,
+    });
+});
+
 export {
     getSellerRequest,
-    respondToRequest
+    respondToRequest,
+    getMyItems,
+    getMyRequests,
 }
