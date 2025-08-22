@@ -2,9 +2,41 @@
 import React from 'react';
 import { Upload, Send, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { CiLogin } from "react-icons/ci";
 
 function HomePage() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  
+
+  const api = axios.create({
+      baseURL: 'http://localhost:3000/api/v1/users',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      withCredentials: true, // ✅ this is necessary to send cookies
+    });
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await api.get('/getUserDetails');
+        if (res.data.user) {
+          setUser(res.data.user); //  User is logged in
+        } else {
+          setUser(null); // fallback
+        }
+      } catch (err) {
+        console.log('User not logged in or session expired');
+        setUser(null); //  Not logged in
+      }
+    };
+  
+    fetchUser();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 font-sans">
@@ -21,8 +53,10 @@ function HomePage() {
             className="text-gray-600 hover:text-blue-600"
             onClick={() => navigate('/register')}
           >
-            Login
-          </button>
+            <CiLogin className="inline-block mr-2" size={24} /> {/* Login Icon */}
+            {user ? `Welcome, ${user.fullname}` : 'Login/Register'} {/* Conditional text based on user state */}
+          </button> 
+          
         </nav>
       </header>
 
@@ -78,9 +112,8 @@ function HomePage() {
         </p>
         <button
             onClick={() => {
-                console.log(localStorage.getItem("token"));
-                const isLoggedIn = localStorage.getItem("token");
-                    if (isLoggedIn) {
+                
+                    if (user) {
                     navigate("/all-items");
                     } else {
                     navigate("/register");

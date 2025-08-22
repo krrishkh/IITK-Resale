@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import Link
 
 function LoginPage() {
   const [identifier, setIdentifier] = useState(''); // username or email
@@ -10,6 +10,7 @@ function LoginPage() {
 
   const navigate = useNavigate();
 
+  // The handleLogin logic remains unchanged.
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -17,40 +18,54 @@ function LoginPage() {
 
     try {
       const response = await axios.post('http://localhost:3000/api/v1/users/login', {
-        identifier, // username or email
+        identifier,
         password
       },
       {
-        withCredentials: true, // ✅ Send/receive cookies
+        withCredentials: true,
       });
 
       console.log('Login successful:', response.data);
-
-      navigate('/user'); // or any route after login
+      navigate('/user'); // Navigate to a protected route after login
     } catch (err) {
       console.error('Login error:', err);
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError('Login failed. Please try again.');
+        setError('Login failed. Please check your credentials and try again.');
       }
     } finally {
       setIsLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+  // Consistent style for input fields
+  const inputStyle = "w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200";
 
+  return (
+    // Themed background gradient
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-6 bg-white p-8 md:p-10 rounded-xl shadow-lg">
+        
+        {/* Branded Header */}
+        <div className="text-center">
+            <h1 className="text-3xl font-bold text-blue-600">
+                IITK<span className="text-green-600">ReSale</span>
+            </h1>
+            <h2 className="mt-2 text-2xl font-bold text-gray-800">Welcome Back!</h2>
+            <p className="mt-2 text-sm text-gray-600">
+                Sign in to continue to your account.
+            </p>
+        </div>
+
+        {/* Error Message Display */}
         {error && (
-          <div className="bg-red-100 text-red-800 p-3 rounded-md text-sm mb-4">
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md text-sm">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-5">
           <input
             type="text"
             placeholder="Username or Email"
@@ -58,7 +73,7 @@ function LoginPage() {
             onChange={(e) => setIdentifier(e.target.value)}
             required
             disabled={isLoading}
-            className="input"
+            className={inputStyle}
           />
           <input
             type="password"
@@ -67,22 +82,22 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
             disabled={isLoading}
-            className="input"
+            className={inputStyle}
           />
           <button
             type="submit"
             disabled={isLoading}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Logging in...' : 'Login'}
+            {isLoading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
-        <p className="text-sm text-center mt-4">
+        <p className="text-sm text-center text-gray-600">
           Don't have an account?{' '}
-          <a href="/register" className="text-blue-600 hover:text-blue-500 font-medium">
+          <Link to="/register" className="font-medium text-blue-600 hover:text-blue-800">
             Register
-          </a>
+          </Link>
         </p>
       </div>
     </div>

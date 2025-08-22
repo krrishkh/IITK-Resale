@@ -21,7 +21,7 @@ router.route("/request").post(verifyJWT, requestPurchase);
 router.route("/respond").post(verifyJWT, respondToRequest);
 
 router.route("/seller-requests").get(verifyJWT, getSellerRequest);
-router.route("/allItems").get( getAllItems)
+router.route("/allItems").get(verifyJWT, getAllItems)
 router.route("/item/:id").get( getItemById);
 router.route("/getMyItems").get(verifyJWT, getMyItems);
 router.route("/getUserDetails").get(verifyJWT, getUserDetails);
