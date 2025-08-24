@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.utils.js";
 import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/ApiError.utils.js";
+import otpGenerator from 'otp-generator';
+import { sendOtpEmail } from "../utils/mailer.js";
 
 
 
@@ -44,6 +46,13 @@ const registerUser = asyncHandler( async(req, res) => {
             throw new ApiError(402, " password is not matching");
         }
 
+        const otp = otpGenerator.generate(6, { 
+                upperCaseAlphabets: false, 
+                specialChars: false, 
+                lowerCaseAlphabets: false 
+        });
+
+
         const newUser = await User.create({
             fullname,
             username:username.toLowerCase(),
@@ -52,16 +61,19 @@ const registerUser = asyncHandler( async(req, res) => {
             address,
             gender,
             password,
-            
+            otp: otp,
+            otpExpires: Date.now() + 10 * 60 * 1000,
         })
+
+        // Send the OTP email
+        console.log(otp)    
+        await sendOtpEmail(newUser.email, otp);
+        console.log("OTP email sent successfully");
 
         const createdUser = await User.findById(newUser._id).select(
                 "-password -refreshToken"
             )
 
-        if(!createdUser){
-            throw new ApiError(500, "Something Went Wrong");
-        }
 
         return   res
         .status(201)
@@ -161,7 +173,7 @@ const logoutUser = asyncHandler( async(req, res) => {
         }
     )
 
-})
+});
 
 const getUserDetails = asyncHandler( async(req, res) => {
     try {
@@ -179,12 +191,42 @@ const getUserDetails = asyncHandler( async(req, res) => {
     }
 });
 
+const verifyOtp = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        throw new ApiError(400, "Email and OTP are required.");
+    }
+
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+        throw new ApiError(404, "User not found.");
+    }
+
+    if (user.otp !== otp || user.otpExpires < Date.now()) {
+        throw new ApiError(400, "Invalid or expired OTP.");
+    }
+
+    // Verification successful
+    user.isVerified = true;
+    user.otp = undefined; // Clear the OTP fields
+    user.otpExpires = undefined;
+    await user.save();
+
+    return res.status(200).json(
+        { 
+            message: "Account verified successfully. You can now log in."
+       }
+    )
+    
+});
+
 
 export {
     registerUser,
     loginUser,
     logoutUser,
-    getUserDetails
-
-
+    getUserDetails,
+    verifyOtp
 }

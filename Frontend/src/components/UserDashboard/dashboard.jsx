@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { LogOutIcon, CheckIcon, XIcon, PlusCircle, Store } from "lucide-react";
+import { LogOutIcon, MessageSquare, PlusCircle, Store } from "lucide-react";
 import axios from "axios";
-import ProductCard from "../Item/productcard"; // Assuming this component is also styled
+import ProductCard from "../Item/productcard";
 import { useNavigate } from "react-router-dom";
 
 function UserDashboard() {
   const [activeTab, setActiveTab] = useState("selling");
   const [sellingItems, setSellingItems] = useState([]);
-  const [buyerRequests, setBuyerRequests] = useState([]);
-  const [myRequests, setMyRequests] = useState([]);
+  const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
-  const API_BASE = "http://localhost:3000/api/v1/users";
+  
+  // Define the axios instance for API calls
+  const api = axios.create({
+    baseURL: "http://localhost:3000/api/v1/users",
+    withCredentials: true,
+  });
 
   // --- Data Fetching ---
   useEffect(() => {
@@ -22,22 +26,20 @@ function UserDashboard() {
       setLoading(true);
       setError(null);
       try {
-        // Fetch all data in parallel for speed
-        const [userRes, sellingRes, buyerRes, myRes] = await Promise.all([
-          axios.get(`${API_BASE}/getUserDetails`, { withCredentials: true }),
-          axios.get(`${API_BASE}/getMyItems`, { withCredentials: true }),
-          axios.get(`${API_BASE}/seller-requests`, { withCredentials: true }),
-          axios.get(`${API_BASE}/getMyRequests`, { withCredentials: true }),
+        // Fetch user details, their items, and their chats in parallel
+        const [userRes, sellingRes, chatsRes] = await Promise.all([
+          api.get('/getUserDetails'),
+          api.get('/getMyItems'),
+          api.get('/my-chats')
         ]);
 
         setUser(userRes.data.user);
         setSellingItems(sellingRes.data.items || []);
-        setBuyerRequests(buyerRes.data.requests || []);
-        setMyRequests(myRes.data.requests || []);
+        setChats(chatsRes.data.data || []);
+
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
         setError("Failed to load dashboard. Please try refreshing.");
-        // If unauthorized, redirect to login
         if (err.response?.status === 401) {
             navigate('/login');
         }
@@ -51,45 +53,14 @@ function UserDashboard() {
   // --- Action Handlers ---
   const handleLogout = async () => {
     try {
-      await axios.post(`${API_BASE}/logout`, {}, { withCredentials: true });
+      await api.post('/logout');
       navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
-  const handleRequestAction = async (requestId, response) => {
-    try {
-      await axios.post(`${API_BASE}/respond`, { requestId, response }, { withCredentials: true });
-      // Refresh buyer requests to show the updated status
-      setBuyerRequests(prev =>
-        prev.map(req =>
-          req._id === requestId
-            ? { ...req, status: response === "accepted" ? "accepted" : "rejected" }
-            : req
-        )
-      );
-    } catch (err) {
-      console.error(`Failed to ${response} request:`, err);
-    }
-  };
-
-  // --- UI Components ---
-
-  // Helper component for colored status badges
-  const StatusBadge = ({ status }) => {
-    const styles = {
-      pending: "bg-yellow-100 text-yellow-800",
-      accepted: "bg-green-100 text-green-800",
-      rejected: "bg-red-100 text-red-800",
-    };
-    return (
-      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full capitalize ${styles[status] || 'bg-gray-100 text-gray-800'}`}>
-        {status}
-      </span>
-    );
-  };
-
+  // --- UI Rendering ---
   const renderTabContent = () => {
     if (loading) {
       return (
@@ -117,48 +88,35 @@ function UserDashboard() {
           </div>
         ) : emptyState("You haven't listed any items for sale yet.");
 
-      case "buyerRequests":
-        return buyerRequests.length > 0 ? (
-          <div className="space-y-4">
-            {buyerRequests.map(req => (
-              <div key={req._id} className="bg-white p-5 rounded-lg shadow-md border transition hover:shadow-lg hover:border-blue-500">
-                <div className="flex justify-between items-start flex-wrap gap-4">
-                    <div>
-                        <p className="text-sm text-gray-500">Request for <strong className="text-gray-800">{req.item.itemName.replace(/"/g, "")}</strong></p>
-                        <p className="font-semibold text-blue-600">From: {req.buyer.fullname}</p>
-                        <p className="text-sm text-gray-600">Contact: {req.buyer.contact || 'Not provided'}</p>
-                    </div>
-                    <StatusBadge status={req.status} />
-                </div>
-                <p className="mt-4 text-gray-700 bg-gray-50 p-3 rounded-md border text-sm italic">"{req.message}"</p>
-                {req.status === "pending" && (
-                  <div className="flex gap-3 mt-4">
-                    <button onClick={() => handleRequestAction(req._id, "accepted")} className="flex items-center gap-1.5 bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-600 transition"> <CheckIcon size={16}/> Accept </button>
-                    <button onClick={() => handleRequestAction(req._id, "rejected")} className="flex items-center gap-1.5 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-600 transition"> <XIcon size={16}/> Reject </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : emptyState("You have no pending or completed requests from buyers.");
-
-      case "yourRequests":
-        return myRequests.length > 0 ? (
-          <div className="space-y-4">
-            {myRequests.map(req => (
-              <div key={req._id} className="bg-white p-5 rounded-lg shadow-md border">
-                <div className="flex justify-between items-start">
-                    <div>
-                        <p className="text-sm text-gray-500">Request for <strong className="text-gray-800">{req.item.itemName.replace(/"/g, "")}</strong></p>
-                        <p className="font-semibold text-blue-600">To: {req.item.owner?.fullname || 'Unknown Seller'}</p>
-                    </div>
-                    <StatusBadge status={req.status} />
-                </div>
-                <p className="mt-4 text-gray-700 bg-gray-50 p-3 rounded-md border text-sm italic">Your message: "{req.message}"</p>
-              </div>
-            ))}
-          </div>
-        ) : emptyState("You haven't made any purchase requests yet. Go visit the store!");
+      case "chats":
+        return chats.length > 0 ? (
+            <div className="space-y-3">
+                {chats.map(chat => {
+                    // Find the other participant in the chat
+                    const otherParticipant = chat.participants.find(p => p._id !== user._id);
+                    return (
+                        <div 
+                            key={chat._id} 
+                            onClick={() => navigate(`/chat/${chat._id}`)}
+                            className="bg-white p-4 rounded-lg shadow-md border flex justify-between items-center cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-blue-500"
+                        >
+                            <div className="flex items-center gap-4">
+                                <img src={chat.item.images[0] || 'https://placehold.co/64x64/E2E8F0/4A5568?text=Item'} alt={chat.item.itemName} className="w-16 h-16 object-cover rounded-md"/>
+                                <div>
+                                    <p className="font-bold text-gray-800">{chat.item.itemName}</p>
+                                    <p className="text-sm text-gray-600">
+                                        Chat with <span className="font-semibold text-blue-600">{otherParticipant?.fullname || 'User'}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <p className="text-xs text-gray-400">
+                                Last updated: {new Date(chat.updatedAt).toLocaleDateString()}
+                            </p>
+                        </div>
+                    );
+                })}
+            </div>
+        ) : emptyState("You have no active conversations.");
 
       default: return null;
     }
@@ -168,12 +126,11 @@ function UserDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Themed Welcome Header */}
         <header className="bg-white p-6 rounded-xl shadow-lg mb-8 border">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-800">Welcome, {user?.fullname || "User"}!</h1>
-              <p className="text-gray-600 mt-1">Manage your listings and requests all in one place.</p>
+              <p className="text-gray-600 mt-1">Manage your listings and conversations here.</p>
             </div>
             <div className="flex items-center gap-3">
               <button onClick={() => navigate("/add-item")} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition shadow-sm"> <PlusCircle size={18} /> Add Item </button>
@@ -183,13 +140,11 @@ function UserDashboard() {
           </div>
         </header>
 
-        {/* Modern Tab Navigation */}
         <div className="mb-8 border-b border-gray-200">
           <nav className="-mb-px flex gap-6" aria-label="Tabs">
             {[
               { id: 'selling', name: "My Items for Sale" }, 
-              { id: 'buyerRequests', name: "Requests from Buyers" }, 
-              { id: 'yourRequests', name: "My Sent Requests" }
+              { id: 'chats', name: "My Chats" }
             ].map(tab => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`whitespace-nowrap pb-3 px-1 border-b-2 font-semibold text-sm transition-colors ${
                   activeTab === tab.id
@@ -201,7 +156,6 @@ function UserDashboard() {
           </nav>
         </div>
 
-        {/* Tab Content */}
         <div>{renderTabContent()}</div>
       </div>
     </div>

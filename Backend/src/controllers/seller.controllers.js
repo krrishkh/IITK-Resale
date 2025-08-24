@@ -9,7 +9,7 @@ const getSellerRequest = asyncHandler( async(req, res) => {
     const sellerId = req.user._id;
     const requests = await PurchaseRequest.find({ seller: sellerId })
         .populate("item", "itemName description price")
-        .populate("buyer", "name contact email");
+        .populate("buyer", "fullname contact email");
 
     return res.status(200).json({
         success: true,
@@ -65,11 +65,18 @@ const getMyItems = asyncHandler(async (req, res) => {
 
 const getMyRequests = asyncHandler(async (req, res) => {
     const buyerId = req.user._id;
+
+    // Find all requests made by the current user
     const requests = await PurchaseRequest.find({ buyer: buyerId })
-        .populate("item", "itemName description price")
-        .populate("seller", "name contact email")
-        .populate("status", "status");
-       
+        // Populate the item details, including the owner's info
+        .populate({
+            path: 'item',
+            select: 'itemName description price owner', // Make sure to select 'owner'
+            populate: {
+                path: 'owner',
+                select: 'fullname' // Now you can get the owner's name from the item
+            }
+        });
     
     return res.status(200).json({
         success: true,

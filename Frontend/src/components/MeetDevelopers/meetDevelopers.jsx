@@ -1,19 +1,21 @@
 import React from 'react';
 import { Linkedin, Github, Mail, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import krrishImage from "/src/assets/KrrishImage.jpg"; // --- THIS IS THE UPDATED IMAGE LINK ---
 
 // Developer data array with the updated image link
 const developers = [
   {
     name: 'Krrish Khandelwal',
-    role: 'Architect & Full Stack Engineer',
+    role: 'Full Stack Engineer',
     bio: 'Crafting seamless digital experiences with a passion for clean code and intuitive design. Turning ideas into reality, one line of code at a time.',
     // --- THIS IS THE UPDATED IMAGE LINK ---
-    image: 'https://lh3.googleusercontent.com/d/1UFLzjZ3LbfbV6PBAgJIj7MY56Uk6j3oV',
+    image: krrishImage,
     email: 'krrishk22@iitk.ac.in',
     linkedin: 'https://www.linkedin.com/in/krrish-khandelwal-9abb271bb/',
     github: 'https://github.com/krrishkh',
   },
+  
 ];
 
 // Social Link Component for cleaner code

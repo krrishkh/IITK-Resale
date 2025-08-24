@@ -8,6 +8,8 @@ import AllProducts from './components/AllItems/allItems';
 import ProductDetails from './components/ProductDetails/productDetails';
 import AddItem from './components/UserDashboard/addItem';
 import MeetTheDevelopers from './components/MeetDevelopers/meetDevelopers';
+import VerifyOtpPage from './components/VerifyOtp/verifyOtp';
+import ChatPage from './components/Chat/chatpage'
 
 
 const router = createBrowserRouter([
@@ -15,11 +17,12 @@ const router = createBrowserRouter([
   { path: '/meet-developers', element: <MeetTheDevelopers /> },
   { path: '/login', element: <LoginPage />},
   { path: '/register', element: <RegisterPage /> }, 
+  { path: '/verify-otp', element: <VerifyOtpPage /> },
   { path: '/user', element: <UserDashboard/>},
   { path: '/add-item', element: <AddItem/>},
   { path: '/all-items', element: <AllProducts/>},
-  { path: '/product/:id', element: <ProductDetails /> }
-  // ... other routes (browse, sell, item details, etc.)
+  { path: '/product/:id', element: <ProductDetails /> },
+  { path: '/chat/:chatId', element: <ChatPage /> }  
 ]);
 
 function App() {
