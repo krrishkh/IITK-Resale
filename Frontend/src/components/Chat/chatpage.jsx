@@ -20,7 +20,7 @@ function ChatPage() {
     const typingTimeoutRef = useRef(null);
 
     const api = axios.create({
-        baseURL: 'http://localhost:3000/api/v1/users',
+        baseURL: import.meta.env.VITE_API_BASE_URL,
         withCredentials: true,
     });
 

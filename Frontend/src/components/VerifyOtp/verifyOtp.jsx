@@ -11,12 +11,15 @@ function VerifyOtpPage() {
     const navigate = useNavigate();
     const location = useLocation();
     
-    // Safely access email from location state
     const email = location.state?.email;
 
+    // --- 1. Create a reusable axios instance ---
+    const api = axios.create({
+        baseURL: 'http://localhost:3000/api/v1/users',
+        withCredentials: true,
+    });
+
     useEffect(() => {
-        // If there's no email, the user shouldn't be on this page.
-        // Redirect them to register after a short delay.
         if (!email) {
             setTimeout(() => {
                 navigate('/register');
@@ -30,7 +33,8 @@ function VerifyOtpPage() {
         setError('');
         setSuccess('');
         try {
-            const response = await axios.post('http://localhost:3000/api/v1/users/verify-otp', { email, otp });
+            // --- 2. Use the new 'api' instance ---
+            const response = await api.post('/verify-otp', { email, otp });
             setSuccess(response.data.message || "Verification successful! Redirecting to login...");
             setTimeout(() => navigate('/login'), 2500);
         } catch (err) {

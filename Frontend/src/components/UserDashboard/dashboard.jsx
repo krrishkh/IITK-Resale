@@ -16,7 +16,7 @@ function UserDashboard() {
   
   // Define the axios instance for API calls
   const api = axios.create({
-    baseURL: "http://localhost:3000/api/v1/users",
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     withCredentials: true,
   });
 

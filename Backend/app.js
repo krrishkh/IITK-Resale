@@ -1,12 +1,24 @@
 import express from "express";
 import cors from "cors"
-
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
+
+app.use(helmet()); // Sets various security HTTP headers
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per window
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+app.use(limiter);
+
 app.use(
     cors({
-      origin: 'http://localhost:5173', // your frontend origin
-      credentials: true, // ✅ allow cookies
+      origin: process.env.CORS_ORIGIN, 
+      credentials: true,
     })
   );
 

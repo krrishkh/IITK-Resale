@@ -7,6 +7,7 @@ import { Chat } from "../models/chat.model.js";
 import { Message } from "../models/message.model.js";
 import { getIO } from "../socket.js";
 
+
 const getAllItems = asyncHandler(async (req, res) => {
     try {
         const items = await Item.find({ status: { $ne: "sold" } }).populate("owner", "fullname contact email");; // Fetch only unsold items

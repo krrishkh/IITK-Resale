@@ -19,6 +19,12 @@ function RegisterPage() {
 
   const navigate = useNavigate();
 
+  // --- 1. Create a reusable axios instance ---
+  const api = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    withCredentials: true,
+  });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -45,10 +51,9 @@ function RegisterPage() {
     
     setIsLoading(true);
     try {
-      // This request now sends an OTP instead of logging the user in
-      const response = await axios.post('http://localhost:3000/api/v1/users/register', formData);
+      // --- 2. Use the new 'api' instance ---
+      const response = await api.post('/register', formData);
       
-      // On success, navigate to the OTP page and pass the email
       navigate('/verify-otp', { 
         state: { email: formData.email } 
       });

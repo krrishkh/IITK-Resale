@@ -1,32 +1,35 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; // Import Link
+import { Link, useNavigate } from 'react-router-dom';
 
 function LoginPage() {
-  const [identifier, setIdentifier] = useState(''); // username or email
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  // The handleLogin logic remains unchanged.
+  // --- 1. Create a reusable axios instance with the base URL ---
+  const api = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    withCredentials: true,
+  });
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:3000/api/v1/users/login', {
+      // --- 2. Use the new 'api' instance with just the endpoint path ---
+      const response = await api.post('/login', {
         identifier,
         password
-      },
-      {
-        withCredentials: true,
       });
 
       console.log('Login successful:', response.data);
-      navigate('/user'); // Navigate to a protected route after login
+      navigate('/user');
     } catch (err) {
       console.error('Login error:', err);
       if (err.response && err.response.data && err.response.data.message) {
@@ -39,15 +42,12 @@ function LoginPage() {
     }
   };
 
-  // Consistent style for input fields
   const inputStyle = "w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200";
 
   return (
-    // Themed background gradient
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-6 bg-white p-8 md:p-10 rounded-xl shadow-lg">
         
-        {/* Branded Header */}
         <div className="text-center">
             <h1 className="text-3xl font-bold text-blue-600">
                 IITK<span className="text-green-600">ReSale</span>
@@ -58,7 +58,6 @@ function LoginPage() {
             </p>
         </div>
 
-        {/* Error Message Display */}
         {error && (
           <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md text-sm">
             {error}
