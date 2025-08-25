@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import HomePage from './components/Homepage/homepage'
+import HomePage from './components/Homepage/HomePage'
 import RegisterPage from './components/Register/register';
 import LoginPage from './components/Login/login';
 import UserDashboard from './components/UserDashboard/dashboard';
