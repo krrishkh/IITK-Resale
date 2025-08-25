@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ProductCard from '../Item/productcard';
+import ProductCard from '../Item/ProductCard';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Search, LayoutGrid, Tag, User } from 'lucide-react';

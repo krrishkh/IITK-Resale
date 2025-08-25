@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { LogOutIcon, MessageSquare, PlusCircle, Store } from "lucide-react";
 import axios from "axios";
-import ProductCard from "../Item/productcard";
+import ProductCard from "../Item/ProductCard";
 import { useNavigate } from "react-router-dom";
 
 function UserDashboard() {
