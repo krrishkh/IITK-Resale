@@ -39,3 +39,6 @@ IITKReSale solves this by providing a dedicated, secure, and **exclusive platfor
 > **Personal User Dashboard**: A dedicated dashboard for users to manage their items for sale and view all their active chat conversations in one place.
 > **Full-Stack Platform**: A complete MERN stack application with a Node.js/Express.js backend API and a modern React.js frontend.
 > **Image Uploads**: Users can upload multiple images for their product listings.
+
+
+## 🛠️ Tech Stack
