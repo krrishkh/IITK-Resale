@@ -1,3 +1,4 @@
+<img width="1024" height="1024" alt="IITKReSale" src="https://github.com/user-attachments/assets/352b8d0f-f2a3-4306-b706-44840c4c5e95" />
 # IITKReSale - Campus Marketplace
 IITKReSale is a full-stack e-commerce platform built exclusively for the IIT Kanpur community. It provides a secure, trusted, and centralized marketplace for students and faculty to buy and sell new or used items like cycles, books, lab equipment, and more.
 
