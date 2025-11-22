@@ -82,7 +82,7 @@ The main landing page that explains the platform's value proposition, key featur
 
 A secure, multi-step registration process. The form validates that the email address ends in `@iitk.ac.in`. Upon submission, the user is redirected to the OTP page to enter the code sent to their email, verifying their identity.
 
-![[image: A screenshot of the Registration Page]](./docs/images/register-page.png)
+<img width="1918" height="971" alt="image" src="https://github.com/user-attachments/assets/9bb2dec4-69ee-4c72-892e-29b98f42c3a7" />
 ![[image: A screenshot of the OTP Verification Page]](./docs/images/otp-page.png)
 
 ### 3. Login Page
