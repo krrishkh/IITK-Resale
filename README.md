@@ -75,7 +75,8 @@ The user journey is designed to be secure and intuitive, revolving around the ch
 
 The main landing page that explains the platform's value proposition, key features, and how the "List, Chat, Sell" process works.
 
-![[image: A screenshot of the IITKReSale Homepage]](./docs/images/homepage.png)
+<img width="1898" height="931" alt="image" src="https://github.com/user-attachments/assets/891f55b4-d942-4260-98ce-08f53368c042" />
+
 
 ### 2. Registration & OTP Verification
 
