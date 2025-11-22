@@ -158,7 +158,7 @@ To get a local copy up and running, follow these simple steps.
     ```
 2.  Navigate to the backend directory:
     ```sh
-    cd your-repo-name/Backend
+    cd ../Backend
     ```
 3.  Install NPM packages:
     ```sh
@@ -166,7 +166,7 @@ To get a local copy up and running, follow these simple steps.
     ```
 4.  Create a `.env` file in the `Backend` directory and add the following essential variables:
     ```env
-    PORT=8000
+    PORT=5000
     MONGODB_URI="your_mongodb_connection_string"
     CORS_ORIGIN="http://localhost:5173"
     JWT_SECRET="your_super_secret_jwt_key"
