@@ -83,25 +83,31 @@ The main landing page that explains the platform's value proposition, key featur
 A secure, multi-step registration process. The form validates that the email address ends in `@iitk.ac.in`. Upon submission, the user is redirected to the OTP page to enter the code sent to their email, verifying their identity.
 
 <img width="1918" height="971" alt="image" src="https://github.com/user-attachments/assets/9bb2dec4-69ee-4c72-892e-29b98f42c3a7" />
-![[image: A screenshot of the OTP Verification Page]](./docs/images/otp-page.png)
+<img width="1919" height="971" alt="image" src="https://github.com/user-attachments/assets/e5b2211a-8511-46cf-85a5-0e8c8bf0d52c" />
+
 
 ### 3. Login Page
 
 Provides two flexible methods for user sign-in: a traditional password login or a passwordless "Login with Email OTP" option for convenience.
 
-![[image: A screenshot of the Login Page with password and OTP options]](./docs/images/login-page.png)
+<img width="1919" height="966" alt="image" src="https://github.com/user-attachments/assets/da7eb872-8cf6-4ca3-a673-2743c6aa43b5" />
+
 
 ### 4. Marketplace
 
 The main store page where users can browse all available listings. It features a category sidebar and a search bar for easy filtering of items.
 
-![[image: A screenshot of the All Items Marketplace Page]](./docs/images/marketplace-page.png)
+<img width="1919" height="968" alt="image" src="https://github.com/user-attachments/assets/cb4270a4-dd7c-466b-9056-43f29812db3e" />
+
 
 ### 5. Product Details
 
 A detailed view of a single item, showing its description, price, condition, seller information, and an interactive image gallery. This is also where a buyer can initiate a chat with the seller.
 
-![[image: A screenshot of a single Product's Detail Page]](./docs/images/product-details.png)
+<img width="1898" height="969" alt="image" src="https://github.com/user-attachments/assets/e07e3a08-e3b7-4e3a-92a0-85ba22e22db2" />
+<img width="1918" height="969" alt="image" src="https://github.com/user-attachments/assets/ecf5973c-fa44-4532-8764-46489451fbb9" />
+
+
 
 ### 6. User Dashboard
 
@@ -110,7 +116,8 @@ The user's personal hub. It features two main sections:
 * **My Items for Sale:** A grid of all items the user has listed.
 * **My Chats:** A list of all active conversations with buyers or sellers, which navigates to the chat page.
 
-![[image: A screenshot of the User Dashboard]](./docs/images/dashboard-page.png)
+<img width="1918" height="966" alt="image" src="https://github.com/user-attachments/assets/9d09a5a1-2d3a-4a0c-baa7-ca4a8e66f4b9" />
+
 
 ### 7. Real-Time Chat
 
@@ -121,13 +128,17 @@ A private, real-time chat interface (powered by Socket.IO) between a buyer and a
 * Real-time "is typing..." indicators.
 * Timestamps for each message.
 
-![[image: A screenshot of the live Chat Page]](./docs/images/chat-page.png)
+<img width="1919" height="972" alt="image" src="https://github.com/user-attachments/assets/262bf00f-03b9-4aec-8a60-7ba3d24654df" />
+<img width="1919" height="970" alt="image" src="https://github.com/user-attachments/assets/0123c106-214e-4aa2-a2ce-99bfd9492e78" />
+
+
 
 ### 8. Add New Item
 
 An easy-to-use, themed form for users to post their own items for sale. It includes fields for item name, description, category, price, condition, and multiple image uploads.
 
-![[image: A screenshot of the Add New Item form]](./docs/images/add-item.png)
+<img width="1919" height="970" alt="image" src="https://github.com/user-attachments/assets/17307efc-da6a-4550-afde-b4bac0ae166c" />
+
 
 ## 🏁 Getting Started
 
