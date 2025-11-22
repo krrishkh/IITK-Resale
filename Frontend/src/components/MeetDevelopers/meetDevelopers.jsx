@@ -1,7 +1,7 @@
 import React from 'react';
 import { Linkedin, Github, Mail, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import krrishImage from "/src/assets/KrrishImage.jpg"; // --- THIS IS THE UPDATED IMAGE LINK ---
+import krrishImage from "/src/assets/KrrishImage.jpg"; 
 
 // Developer data array with the updated image link
 const developers = [
